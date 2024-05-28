@@ -12,6 +12,7 @@ class WeatherRepository @Inject constructor(private val api: WeatherApi) {
         val response = try {
             api.getWeather(query = cityQuery)
         } catch (ex: Exception) {
+            ex.printStackTrace()
             return DataOrException(e = ex)
         }
 

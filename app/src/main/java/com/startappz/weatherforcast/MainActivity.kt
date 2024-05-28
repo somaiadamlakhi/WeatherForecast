@@ -25,12 +25,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             WeatherApp()
-
-
-            val vm by viewModels<MainViewModel>()
-            vm.loadWeather()
-
-
         }
     }
 }
