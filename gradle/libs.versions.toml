@@ -16,6 +16,7 @@ retrofitConvertorVersion = "2.9.0"
 roomVersion = "2.6.1"
 androidxNavigationFragment = "2.7.7"
 androidxNavigation = "2.7.7"
+coilVersion = "2.6.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -56,6 +57,8 @@ androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragme
 androidx-navigation-ui = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "androidxNavigationFragment" }
 
 
+#coil
+coil = { module = "io.coil-kt:coil-compose", version.ref = "coilVersion" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
