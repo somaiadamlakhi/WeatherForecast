@@ -164,7 +164,8 @@ fun ShowSettingsDropDownMenu(showDialog: MutableState<Boolean>, navController: N
                                 DropDownMenuValues.SETTINGS.index -> Icons.Default.Settings
                                 else -> Icons.Default.Info
 
-                            }, contentDescription = item
+                            }, contentDescription = item,
+                            tint = Color.LightGray
                         )
                         Spacer(modifier = Modifier.width(5.dp))
                         Text(text = item)
