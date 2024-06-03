@@ -1,4 +1,4 @@
-package com.startappz.weatherforcast.screens
+package com.startappz.weatherforcast.screens.splash
 
 import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.core.Animatable
@@ -49,7 +49,9 @@ fun WeatherSplashScreen(navController: NavController) {
         )
 
         delay(2000L)
-        navController.navigate(WeatherScreens.MainScreen.name)
+        navController.navigate(WeatherScreens.MainScreen.name){
+            popUpTo(0)
+        }
     }
     Surface(
         modifier = Modifier

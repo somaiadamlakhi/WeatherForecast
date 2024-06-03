@@ -3,7 +3,6 @@ package com.startappz.weatherforcast.screens.main
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,10 +12,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -26,8 +23,6 @@ import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,14 +31,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
-import com.startappz.weatherforcast.R
 import com.startappz.weatherforcast.data.DataOrException
 import com.startappz.weatherforcast.model.Weather
 import com.startappz.weatherforcast.model.WeatherItem
+import com.startappz.weatherforcast.navigation.WeatherScreens
 import com.startappz.weatherforcast.utils.Constants.IMAGE_PATH
 import com.startappz.weatherforcast.utils.fehToCel
 import com.startappz.weatherforcast.utils.formatDate
-import com.startappz.weatherforcast.utils.formatDecimals
 import com.startappz.weatherforcast.widgets.HumidityWindPressureRow
 import com.startappz.weatherforcast.widgets.SunsetSunRiseRow
 import com.startappz.weatherforcast.widgets.WeatherAppBar
@@ -73,7 +67,9 @@ fun MainScaffold(weather: Weather? = null, navController: NavController? = null)
             WeatherAppBar(
                 title = "${weather?.city?.name}, ${weather?.city?.country}",
                 navController = navController,
-                elevation = 5.dp,
+                onAddActionClicked = {
+                    navController?.navigate(WeatherScreens.SearchScreen.name)
+                }
             )
         }
     ) {
