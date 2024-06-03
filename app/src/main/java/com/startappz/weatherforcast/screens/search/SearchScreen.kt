@@ -1,26 +1,28 @@
 package com.startappz.weatherforcast.screens.search
 
+import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
@@ -29,9 +31,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.startappz.weatherforcast.navigation.WeatherScreens
-import com.startappz.weatherforcast.screens.main.MainContent
-import com.startappz.weatherforcast.screens.main.MainViewModel
 import com.startappz.weatherforcast.widgets.WeatherAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,6 +39,7 @@ fun SearchScreen(navController: NavController, viewmodel: SearchViewModel = hilt
 
 
     Scaffold(
+        modifier = Modifier.fillMaxWidth(),
         topBar = {
             WeatherAppBar(
                 title = "Search",
@@ -56,9 +56,17 @@ fun SearchScreen(navController: NavController, viewmodel: SearchViewModel = hilt
         Surface {
             Column(
                 verticalArrangement = Arrangement.Center,
+                modifier = Modifier.padding(top = 60.dp).fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Search Screen")
+                SearchBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .align(Alignment.CenterHorizontally)
+                ) {
+                    Log.d("SEARCH SCREEN", "SearchScreen: $it")
+                }
             }
         }
 
@@ -68,6 +76,7 @@ fun SearchScreen(navController: NavController, viewmodel: SearchViewModel = hilt
 
 @Composable
 fun SearchBar(
+    modifier: Modifier = Modifier,
     onSearch: (String) -> Unit = {}
 ) {
     val searchQueryState = rememberSaveable { mutableStateOf("") }
@@ -75,10 +84,11 @@ fun SearchBar(
     val valid = remember(searchQueryState.value) {
         searchQueryState.value.trim().isNotEmpty()
     }
-    Column {
+    Column{
         CommonTextField(
+            modifier = modifier.fillMaxWidth(),
             valueState = searchQueryState,
-            placeHolder = "Seattle",
+            placeHolder = "City Name",
             onAction = KeyboardActions {
                 if (!valid) return@KeyboardActions
                 else {
@@ -91,9 +101,9 @@ fun SearchBar(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommonTextField(
+    modifier: Modifier=Modifier,
     valueState: MutableState<String>,
     placeHolder: String,
     keyBoardType: KeyboardType = KeyboardType.Text,
@@ -102,6 +112,7 @@ fun CommonTextField(
 ) {
 
     OutlinedTextField(
+        modifier = modifier,
         value = valueState.value,
         maxLines = 1,
         onValueChange = {

@@ -1,6 +1,7 @@
 package com.startappz.weatherforcast.widgets
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
@@ -13,12 +14,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,6 +48,8 @@ fun WeatherAppBar(
             ),
             title = {
                 Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
                     text = title ?: "",
                     color = MaterialTheme.colorScheme.primary,
                     style = TextStyle(
@@ -79,7 +83,7 @@ fun WeatherAppBar(
 
                 if (icon != null) {
                     Icon(imageVector = icon, contentDescription = "",
-                        tint = MaterialTheme.colorScheme.onSecondary,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.clickable {
                             onButtonClick.invoke()
                         })
