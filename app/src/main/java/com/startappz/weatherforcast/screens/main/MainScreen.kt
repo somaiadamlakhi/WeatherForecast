@@ -48,17 +48,15 @@ import com.startappz.weatherforcast.widgets.WeatherDetailRow
 fun MainScreen(
     navController: NavHostController,
     viewmodel: MainViewModel = hiltViewModel(),
-    city: String?="Jordan"
+    city: String? = "Jordan"
 ) {
 
     Log.d("TAG", "MainScreen: $city")
     val weatherData = produceState<DataOrException<Weather, Boolean, Exception>
             >(initialValue = DataOrException(loading = true)) {
-//        var defaultCity = city
-//        if (defaultCity.isNullOrEmpty()) defaultCity = "Jordan"
-        value = viewmodel.getWeatherData("Jordan")
-
-
+        city?.let {
+            value = viewmodel.getWeatherData(city)
+        }
     }.value
 
     if (weatherData.loading == true) {
