@@ -71,8 +71,7 @@ fun WeatherNavigation() {
          * Search Screen
          */
         composable(WeatherScreens.SearchScreen.name) {
-            val viewmodel = hiltViewModel<SearchViewModel>()
-            SearchScreen(navController, viewmodel)
+            SearchScreen(navController)
         }
     }
 }

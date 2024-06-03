@@ -32,13 +32,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.startappz.weatherforcast.navigation.WeatherScreens
+import com.startappz.weatherforcast.widgets.CommonTextField
+import com.startappz.weatherforcast.widgets.SearchBar
 import com.startappz.weatherforcast.widgets.WeatherAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen(navController: NavController, viewmodel: SearchViewModel = hiltViewModel()) {
-
-
+fun SearchScreen(navController: NavController) {
     Scaffold(
         modifier = Modifier.fillMaxWidth(),
         topBar = {
@@ -78,64 +78,6 @@ fun SearchScreen(navController: NavController, viewmodel: SearchViewModel = hilt
 
 }
 
-@Composable
-fun SearchBar(
-    modifier: Modifier = Modifier,
-    onSearch: (String) -> Unit = {}
-) {
-    val searchQueryState = rememberSaveable { mutableStateOf("") }
-    val keyBoardController = LocalSoftwareKeyboardController.current
-    val valid = remember(searchQueryState.value) {
-        searchQueryState.value.trim().isNotEmpty()
-    }
-    Column {
-        CommonTextField(
-            modifier = modifier.fillMaxWidth(),
-            valueState = searchQueryState,
-            placeHolder = "City Name",
-            onAction = KeyboardActions {
-                if (!valid) return@KeyboardActions
-                else {
-                    onSearch(searchQueryState.value.trim())
-                    searchQueryState.value = ""
-                    keyBoardController?.hide()
-                }
-            },
-        )
-    }
-}
-
-@Composable
-fun CommonTextField(
-    modifier: Modifier = Modifier,
-    valueState: MutableState<String>,
-    placeHolder: String,
-    keyBoardType: KeyboardType = KeyboardType.Text,
-    imeActions: ImeAction = ImeAction.Next,
-    onAction: KeyboardActions = KeyboardActions.Default
-) {
-
-    OutlinedTextField(
-        modifier = modifier,
-        value = valueState.value,
-        maxLines = 1,
-        onValueChange = {
-            valueState.value = it
-        },
-        label = {
-            Text(text = placeHolder)
-        },
-        keyboardOptions = KeyboardOptions(
-            keyboardType = keyBoardType,
-            imeAction = imeActions,
-            capitalization = KeyboardCapitalization.Words
-        ),
-        keyboardActions = onAction,
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = Color.Blue,
-            cursorColor = Color.Black
-        )
 
 
-    )
-}
+
