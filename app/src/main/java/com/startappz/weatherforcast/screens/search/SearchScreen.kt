@@ -31,6 +31,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.startappz.weatherforcast.navigation.WeatherScreens
 import com.startappz.weatherforcast.widgets.WeatherAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,7 +57,9 @@ fun SearchScreen(navController: NavController, viewmodel: SearchViewModel = hilt
         Surface {
             Column(
                 verticalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(top = 60.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(top = 60.dp)
+                    .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 SearchBar(
@@ -64,7 +67,8 @@ fun SearchScreen(navController: NavController, viewmodel: SearchViewModel = hilt
                         .fillMaxWidth()
                         .padding(16.dp)
                         .align(Alignment.CenterHorizontally)
-                ) {
+                ) { mCity ->
+                    navController.navigate(WeatherScreens.MainScreen.name + "/$mCity")
                     Log.d("SEARCH SCREEN", "SearchScreen: $it")
                 }
             }
@@ -84,7 +88,7 @@ fun SearchBar(
     val valid = remember(searchQueryState.value) {
         searchQueryState.value.trim().isNotEmpty()
     }
-    Column{
+    Column {
         CommonTextField(
             modifier = modifier.fillMaxWidth(),
             valueState = searchQueryState,
@@ -103,7 +107,7 @@ fun SearchBar(
 
 @Composable
 fun CommonTextField(
-    modifier: Modifier=Modifier,
+    modifier: Modifier = Modifier,
     valueState: MutableState<String>,
     placeHolder: String,
     keyBoardType: KeyboardType = KeyboardType.Text,

@@ -36,7 +36,7 @@ fun WeatherSplashScreen(navController: NavController) {
     }
 
     val splashDurationInMillis = 800
-
+    val defaultCity = "Jordan"
     LaunchedEffect(key1 = true) {
         scale.animateTo(
             0.9f,
@@ -49,7 +49,7 @@ fun WeatherSplashScreen(navController: NavController) {
         )
 
         delay(2000L)
-        navController.navigate(WeatherScreens.MainScreen.name){
+        navController.navigate(WeatherScreens.MainScreen.name + "/$defaultCity") {
             popUpTo(0)
         }
     }

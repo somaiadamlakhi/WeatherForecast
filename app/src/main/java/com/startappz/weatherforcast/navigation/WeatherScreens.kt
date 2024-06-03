@@ -8,3 +8,8 @@ enum class WeatherScreens {
     SearchScreen,
     SettingsScreen
 }
+
+enum class Routes(val key: String) {
+    CITY("city")
+
+}

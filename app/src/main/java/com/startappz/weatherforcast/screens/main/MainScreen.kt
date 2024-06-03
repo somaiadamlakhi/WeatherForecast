@@ -1,5 +1,6 @@
 package com.startappz.weatherforcast.screens.main
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -44,10 +45,19 @@ import com.startappz.weatherforcast.widgets.WeatherAppBar
 import com.startappz.weatherforcast.widgets.WeatherDetailRow
 
 @Composable
-fun MainScreen(navController: NavHostController, viewmodel: MainViewModel = hiltViewModel()) {
+fun MainScreen(
+    navController: NavHostController,
+    viewmodel: MainViewModel = hiltViewModel(),
+    city: String?="Jordan"
+) {
+
+    Log.d("TAG", "MainScreen: $city")
     val weatherData = produceState<DataOrException<Weather, Boolean, Exception>
             >(initialValue = DataOrException(loading = true)) {
+//        var defaultCity = city
+//        if (defaultCity.isNullOrEmpty()) defaultCity = "Jordan"
         value = viewmodel.getWeatherData("Jordan")
+
 
     }.value
 
