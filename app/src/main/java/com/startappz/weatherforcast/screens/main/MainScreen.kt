@@ -67,7 +67,6 @@ fun MainScreen(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScaffold(weather: Weather? = null, navController: NavController? = null) {
     Scaffold(

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
@@ -28,7 +27,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -37,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
@@ -45,9 +44,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.startappz.weatherforcast.model.Favorite
 import com.startappz.weatherforcast.navigation.DropDownMenuValues
 import com.startappz.weatherforcast.navigation.WeatherScreens
+import com.startappz.weatherforcast.screens.favourites.FavoriteViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,6 +59,7 @@ fun WeatherAppBar(
     isMainScreen: Boolean = true,
     elevation: Dp = 5.dp,
     navController: NavController? = null,
+    favoriteViewModel: FavoriteViewModel = hiltViewModel(),
     onAddActionClicked: () -> Unit = {},
     onButtonClick: () -> Unit = {},
 ) {
@@ -94,7 +97,7 @@ fun WeatherAppBar(
                         }
                     )
 
-                    Spacer(modifier = Modifier.padding(horizontal = 5.dp))
+                    Spacer(modifier = Modifier.padding(horizontal = 2.dp))
                     IconButton(onClick = {
                         showDialog.value = true
                     }) {
@@ -103,7 +106,7 @@ fun WeatherAppBar(
                             contentDescription = "more"
                         )
                     }
-                    Spacer(modifier = Modifier.padding(horizontal = 5.dp))
+                    Spacer(modifier = Modifier.padding(horizontal = 2.dp))
                 }
 
 
@@ -116,6 +119,34 @@ fun WeatherAppBar(
                         modifier = Modifier.clickable {
                             onButtonClick.invoke()
                         })
+                }
+
+                /**
+                 * add fav icon in main screen only
+                 */
+                if (isMainScreen) {
+                    Icon(
+                        imageVector = Icons.Default.Favorite,
+                        contentDescription = "Favorite Icon",
+                        tint = Color.Red.copy(0.6f),
+                        modifier = Modifier
+                            .scale(0.9f)
+                            .clickable {
+                                title?.let {
+                                    if (title.split(",").size >= 2)
+                                        favoriteViewModel.insertFavorite(
+                                            Favorite(
+                                                city = title
+                                                    .split(",")[0],
+                                                country = title
+                                                    .split(",")[1]
+                                            )
+                                        )
+                                }
+
+                            }
+                    )
+                    Spacer(modifier = Modifier.padding(horizontal = 2.dp))
                 }
 
             }
@@ -175,9 +206,9 @@ fun ShowSettingsDropDownMenu(showDialog: MutableState<Boolean>, navController: N
                     expanded = false
                     showDialog.value = false
                     when (index) {
-                        DropDownMenuValues.ABOUT.index ->  navController?.navigate(WeatherScreens.AboutScreen.name)
-                        DropDownMenuValues.FAVOURITES.index ->  navController?.navigate(WeatherScreens.FavouriteScreen.name)
-                        DropDownMenuValues.SETTINGS.index ->  navController?.navigate(WeatherScreens.SettingsScreen.name)
+                        DropDownMenuValues.ABOUT.index -> navController?.navigate(WeatherScreens.AboutScreen.name)
+                        DropDownMenuValues.FAVOURITES.index -> navController?.navigate(WeatherScreens.FavouriteScreen.name)
+                        DropDownMenuValues.SETTINGS.index -> navController?.navigate(WeatherScreens.SettingsScreen.name)
                         else -> Icons.Default.Info
 
                     }

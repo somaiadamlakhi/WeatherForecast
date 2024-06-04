@@ -1,7 +1,6 @@
 package com.startappz.weatherforcast.screens.favourites
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.startappz.weatherforcast.model.Favorite
