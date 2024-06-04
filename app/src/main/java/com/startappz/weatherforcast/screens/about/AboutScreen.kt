@@ -1,9 +1,7 @@
 package com.startappz.weatherforcast.screens.about
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.startappz.weatherforcast.R
 import com.startappz.weatherforcast.widgets.WeatherAppBar
@@ -41,7 +38,7 @@ fun AboutScreen(navController: NavHostController) {
     ) {
         it.toString()
         Surface(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize().padding(it.calculateTopPadding())
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,

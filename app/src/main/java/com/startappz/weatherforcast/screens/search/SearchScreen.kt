@@ -36,7 +36,6 @@ import com.startappz.weatherforcast.widgets.CommonTextField
 import com.startappz.weatherforcast.widgets.SearchBar
 import com.startappz.weatherforcast.widgets.WeatherAppBar
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(navController: NavController) {
     Scaffold(
@@ -53,12 +52,12 @@ fun SearchScreen(navController: NavController) {
             )
         }
     ) {
-        it.toString()
+
         Surface {
             Column(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
-                    .padding(top = 60.dp)
+                    .padding(top =  it.calculateTopPadding())
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
