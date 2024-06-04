@@ -3,6 +3,7 @@ package com.startappz.weatherforcast.widgets
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,6 +30,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -61,96 +63,106 @@ fun WeatherAppBar(
     navController: NavController? = null,
     favoriteViewModel: FavoriteViewModel = hiltViewModel(),
     onAddActionClicked: () -> Unit = {},
-    onButtonClick: () -> Unit = {},
+    onButtonClick: () -> Unit = {}
 ) {
     val showDialog = remember {
+        mutableStateOf(false)
+    }
+
+    val showIt = remember {
         mutableStateOf(false)
     }
 
     if (showDialog.value) ShowSettingsDropDownMenu(showDialog = showDialog, navController = navController)
 
     Surface(shadowElevation = elevation) {
-        TopAppBar(
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.Transparent,
-                titleContentColor = MaterialTheme.colorScheme.primary,
-            ),
-            title = {
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    text = title ?: "",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = TextStyle(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 15.sp
-                    )
+        TopAppBar(colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent,
+            titleContentColor = MaterialTheme.colorScheme.primary,
+        ), title = {
+            Text(
+                modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center, text = title ?: "", color = MaterialTheme.colorScheme.primary, style = TextStyle(
+                    fontWeight = FontWeight.Bold, fontSize = 15.sp
                 )
-            },
-            actions = {
-                if (isMainScreen) {
+            )
+        }, actions = {
+            if (isMainScreen) {
+                Icon(imageVector = Icons.Default.Search, contentDescription = "search", modifier = Modifier.clickable {
+                    onAddActionClicked()
+                })
+
+                Spacer(modifier = Modifier.padding(horizontal = 2.dp))
+                IconButton(onClick = {
+                    showDialog.value = true
+                }) {
                     Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "search",
-                        modifier = Modifier.clickable {
-                            onAddActionClicked()
-                        }
+                        imageVector = Icons.Default.MoreVert, contentDescription = "more"
                     )
-
-                    Spacer(modifier = Modifier.padding(horizontal = 2.dp))
-                    IconButton(onClick = {
-                        showDialog.value = true
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = "more"
-                        )
-                    }
-                    Spacer(modifier = Modifier.padding(horizontal = 2.dp))
                 }
-
-
-            },
-            navigationIcon = {
-
-                if (icon != null) {
-                    Icon(imageVector = icon, contentDescription = "",
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.clickable {
-                            onButtonClick.invoke()
-                        })
-                }
-
-                /**
-                 * add fav icon in main screen only
-                 */
-                if (isMainScreen) {
-                    Icon(
-                        imageVector = Icons.Default.Favorite,
-                        contentDescription = "Favorite Icon",
-                        tint = Color.Red.copy(0.6f),
-                        modifier = Modifier
-                            .scale(0.9f)
-                            .clickable {
-                                title?.let {
-                                    if (title.split(",").size >= 2)
-                                        favoriteViewModel.insertFavorite(
-                                            Favorite(
-                                                city = title
-                                                    .split(",")[0],
-                                                country = title
-                                                    .split(",")[1]
-                                            )
-                                        )
-                                }
-
-                            }
-                    )
-                    Spacer(modifier = Modifier.padding(horizontal = 2.dp))
-                }
-
+                Spacer(modifier = Modifier.padding(horizontal = 2.dp))
             }
-        )
+
+
+        }, navigationIcon = {
+
+            if (icon != null) {
+                Icon(imageVector = icon, contentDescription = "", tint = MaterialTheme.colorScheme.primary, modifier = Modifier.clickable {
+                    onButtonClick.invoke()
+                })
+            }
+
+            /**
+             * add fav icon in main screen only
+             */
+            if (isMainScreen) {
+                title?.let {
+                    if (title.split(",").size >= 2) {
+                        val cityName = title.split(",")[0]
+                        val countryName = title.split(",")[1]
+
+                        val favItem = Favorite(
+                            city = cityName, country = countryName
+                        )
+                        val isAlreadyFavList = favoriteViewModel
+                            .favList.collectAsState().value.filter { item ->
+                                (item.city == title.split(",")[0])
+                            }
+
+                        if (isAlreadyFavList.isEmpty()) {
+                            Icon(
+                                imageVector = Icons.Default.Favorite,
+                                contentDescription = "Favorite icon",
+                                modifier = Modifier
+                                    .scale(0.9f)
+                                    .clickable {
+                                        val dataList = title.split(",")
+                                        favoriteViewModel
+                                            .insertFavorite(
+                                                Favorite(
+                                                    city = dataList[0], // city name
+                                                    country = dataList[1] // country code
+                                                )
+                                            )
+                                            .run {
+                                                showIt.value = true
+                                            }
+                                    },
+                                tint = Color.Red.copy(alpha = 0.6f)
+                            )
+                        } else {
+                            showIt.value = false
+                            Box {}
+
+                        }
+
+
+                        Spacer(modifier = Modifier.padding(horizontal = 2.dp))
+                    }
+
+                }
+            }
+
+        })
     }
 
 
@@ -162,9 +174,7 @@ fun ShowSettingsDropDownMenu(showDialog: MutableState<Boolean>, navController: N
         mutableStateOf(true)
     }
     val items = listOf(
-        "About",
-        "Favourites",
-        "Settings"
+        "About", "Favourites", "Settings"
     )
     Column(
         modifier = Modifier
@@ -177,11 +187,9 @@ fun ShowSettingsDropDownMenu(showDialog: MutableState<Boolean>, navController: N
         ) {
 
         DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = {
+            expanded = expanded, onDismissRequest = {
                 expanded = false
-            }, modifier =
-            Modifier
+            }, modifier = Modifier
                 .width(140.dp)
                 .background(Color.White)
         ) {
@@ -195,8 +203,7 @@ fun ShowSettingsDropDownMenu(showDialog: MutableState<Boolean>, navController: N
                                 DropDownMenuValues.SETTINGS.index -> Icons.Default.Settings
                                 else -> Icons.Default.Info
 
-                            }, contentDescription = item,
-                            tint = Color.LightGray
+                            }, contentDescription = item, tint = Color.LightGray
                         )
                         Spacer(modifier = Modifier.width(5.dp))
                         Text(text = item)

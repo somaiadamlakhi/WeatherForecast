@@ -25,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -80,7 +79,7 @@ fun MainScaffold(weather: Weather? = null, navController: NavController? = null)
         }
     ) {
         if (weather != null) {
-            MainContent(weather,it)
+            MainContent(weather, it)
         }
     }
 

@@ -7,7 +7,9 @@ import com.startappz.weatherforcast.model.Favorite
 import com.startappz.weatherforcast.repository.WeatherDBRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -19,20 +21,28 @@ class FavoriteViewModel @Inject constructor(private val repository: WeatherDBRep
     val favList = _favList.asStateFlow()
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.getFavorite().distinctUntilChanged().collect { listOfFaves ->
-                    if (listOfFaves.isEmpty()) {
-                        Log.d("TAG", ": Empty favs ")
-                    } else {
-                        _favList.value = listOfFaves
-                        Log.d("FAVS", ":${favList.value} ")
-                    }
-                }
-
-        }
+        getFavoriteCites()
     }
 
     fun insertFavorite(favorite: Favorite) = viewModelScope.launch { repository.insertFavorite(favorite) }
     fun updateFavorite(favorite: Favorite) = viewModelScope.launch { repository.updateFavorite(favorite) }
     fun deleteFavorite(favorite: Favorite) = viewModelScope.launch { repository.deleteFavorite(favorite) }
+
+    fun getFavoriteCites(): List<Favorite> {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getFavorite().distinctUntilChanged().collect { listOfFaves ->
+                if (listOfFaves.isEmpty()) {
+                    Log.d("TAG", ": Empty favs ")
+                } else {
+                    _favList.value = listOfFaves
+                    Log.d("FAVS", ":${favList.value} ")
+                }
+            }
+
+        }
+
+        return favList.value
+    }
+
+
 }
