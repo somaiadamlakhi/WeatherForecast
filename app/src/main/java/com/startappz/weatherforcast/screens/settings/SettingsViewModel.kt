@@ -15,23 +15,34 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    repository: UnitDBRepository
+    private val repository: UnitDBRepository
 ) : ViewModel() {
 
     private val _unitList = MutableStateFlow<List<Unit>>(emptyList())
-    private val unitList = _unitList.asStateFlow()
+    val unitList = _unitList.asStateFlow()
 
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
             repository.getUnits().distinctUntilChanged().collect { listOfUnits ->
-                if (listOfUnits.isNullOrEmpty()) {
+                if (listOfUnits.isEmpty()) {
                     Log.d("Units TAG", "Empty Units: ")
                 } else {
+                    _unitList.value = listOfUnits
                     Log.d("Units TAG", "$listOfUnits")
                 }
 
             }
         }
+    }
+
+    fun insertUnit(unit: Unit) = viewModelScope.launch {
+        repository.insertUnit(unit)
+    }
+
+    fun updateUnit(unit: Unit) = viewModelScope.launch { repository.updateUnit(unit) }
+    fun deleteUnit(unit: Unit) = viewModelScope.launch { repository.deleteUnit(unit) }
+    fun deleteAllUnits() = viewModelScope.launch {
+        repository.deleteAllUnits()
     }
 }
