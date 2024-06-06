@@ -15,6 +15,8 @@ import com.startappz.weatherforcast.screens.splash.WeatherSplashScreen
 import com.startappz.weatherforcast.screens.main.MainViewModel
 import com.startappz.weatherforcast.screens.search.SearchScreen
 import com.startappz.weatherforcast.screens.settings.SettingsScreen
+import com.startappz.weatherforcast.screens.settings.SettingsViewModel
+import com.startappz.weatherforcast.utils.Routes
 
 @Composable
 fun WeatherNavigation() {
@@ -96,7 +98,8 @@ fun WeatherNavigation() {
          * Favourites Screen
          */
         composable(WeatherScreens.SettingsScreen.name) {
-            SettingsScreen(navController)
+            val settingsViewModel = hiltViewModel<SettingsViewModel>()
+            SettingsScreen(navController, settingsViewModel)
         }
     }
 }

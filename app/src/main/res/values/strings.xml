@@ -3,4 +3,8 @@
     <string name="about_app">Weather App v.0.1</string>
     <string name="api_used">Weather API by: https://openweathermap.org</string>
     <string name="favorite_cities">Favorite Cities</string>
+    <string name="search_title">Search</string>
+    <string name="change_unit_of_measurement">Change Unit Of Measurement</string>
+    <string name="btn_save">Save</string>
+    <string name="celsius">Celsius ºC</string>
 </resources>

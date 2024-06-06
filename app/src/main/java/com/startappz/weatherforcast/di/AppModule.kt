@@ -2,6 +2,7 @@ package com.startappz.weatherforcast.di
 
 import android.content.Context
 import androidx.room.Room
+import com.startappz.weatherforcast.data.UnitDao
 import com.startappz.weatherforcast.data.WeatherDao
 import com.startappz.weatherforcast.data.WeatherDatabase
 import com.startappz.weatherforcast.network.WeatherApi
@@ -32,17 +33,20 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun provideAppDatabase(@ApplicationContext context: Context): WeatherDatabase
-            = Room.databaseBuilder(
+    fun provideAppDatabase(@ApplicationContext context: Context): WeatherDatabase = Room.databaseBuilder(
         context,
         WeatherDatabase::class.java,
-        "weather_database")
+        "weather_database"
+    )
         .fallbackToDestructiveMigration()
         .build()
 
     @Singleton
     @Provides
-    fun provideWeatherDao(weatherDatabase: WeatherDatabase): WeatherDao
-            = weatherDatabase.weatherDao()
+    fun provideWeatherDao(weatherDatabase: WeatherDatabase): WeatherDao = weatherDatabase.weatherDao()
+
+    @Singleton
+    @Provides
+    fun provideUnitDao(weatherDatabase: WeatherDatabase): UnitDao = weatherDatabase.unitDao()
 
 }

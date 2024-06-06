@@ -12,8 +12,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.startappz.weatherforcast.R
 import com.startappz.weatherforcast.navigation.WeatherScreens
 import com.startappz.weatherforcast.widgets.SearchBar
 import com.startappz.weatherforcast.widgets.WeatherAppBar
@@ -24,7 +26,7 @@ fun SearchScreen(navController: NavController) {
         modifier = Modifier.fillMaxWidth(),
         topBar = {
             WeatherAppBar(
-                title = "Search",
+                title = stringResource(id = R.string.search_title),
                 icon = Icons.AutoMirrored.Default.ArrowBack,
                 isMainScreen = false,
                 navController = navController,
@@ -39,7 +41,7 @@ fun SearchScreen(navController: NavController) {
             Column(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
-                    .padding(top =  it.calculateTopPadding())
+                    .padding(top = it.calculateTopPadding())
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

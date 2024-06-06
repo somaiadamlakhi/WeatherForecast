@@ -49,9 +49,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.startappz.weatherforcast.model.Favorite
-import com.startappz.weatherforcast.navigation.DropDownMenuValues
 import com.startappz.weatherforcast.navigation.WeatherScreens
 import com.startappz.weatherforcast.screens.favourites.FavoriteViewModel
+import com.startappz.weatherforcast.utils.DropDownMenuValues
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
