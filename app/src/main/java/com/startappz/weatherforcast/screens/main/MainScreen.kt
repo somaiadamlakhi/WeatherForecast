@@ -1,6 +1,5 @@
 package com.startappz.weatherforcast.screens.main
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,7 +18,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,9 +38,11 @@ import com.startappz.weatherforcast.data.DataOrException
 import com.startappz.weatherforcast.model.Weather
 import com.startappz.weatherforcast.model.WeatherItem
 import com.startappz.weatherforcast.navigation.WeatherScreens
+import com.startappz.weatherforcast.screens.settings.SettingsViewModel
 import com.startappz.weatherforcast.utils.Constants.IMAGE_PATH
-import com.startappz.weatherforcast.utils.fehToCel
+import com.startappz.weatherforcast.utils.TempUnits
 import com.startappz.weatherforcast.utils.formatDate
+import com.startappz.weatherforcast.utils.formatDecimals
 import com.startappz.weatherforcast.widgets.HumidityWindPressureRow
 import com.startappz.weatherforcast.widgets.SunsetSunRiseRow
 import com.startappz.weatherforcast.widgets.WeatherAppBar
@@ -46,27 +52,42 @@ import com.startappz.weatherforcast.widgets.WeatherDetailRow
 fun MainScreen(
     navController: NavHostController,
     viewmodel: MainViewModel = hiltViewModel(),
+    settingsViewModel: SettingsViewModel = hiltViewModel(),
     city: String? = "Jordan"
 ) {
 
-    Log.d("TAG", "MainScreen: $city")
-    val weatherData = produceState<DataOrException<Weather, Boolean, Exception>
-            >(initialValue = DataOrException(loading = true)) {
-        city?.let {
-            value = viewmodel.getWeatherData(city)
-        }
-    }.value
-
-    if (weatherData.loading == true) {
-        CircularProgressIndicator()
-    } else {
-        weatherData.data?.let { MainScaffold(it, navController) }
+    val unitFromDb = settingsViewModel.unitList.collectAsState().value
+    var unit by remember {
+        mutableStateOf(TempUnits.Fahrenheit.unit)
     }
+    var isImperial by remember {
+        mutableStateOf(false)
+    }
+
+    if (unitFromDb.isNotEmpty()) {
+        unit = unitFromDb[0].unit
+        isImperial = unit == TempUnits.Fahrenheit.unit
+
+        val weatherData = produceState<DataOrException<Weather, Boolean, Exception>
+                >(initialValue = DataOrException(loading = true)) {
+            city?.let {
+                value = viewmodel.getWeatherData(city = city, unit = unit)
+            }
+        }.value
+
+        if (weatherData.loading == true) {
+            CircularProgressIndicator()
+        } else {
+            weatherData.data?.let { MainScaffold(it, navController, isImperial = isImperial) }
+        }
+    }
+
+
 }
 
 
 @Composable
-fun MainScaffold(weather: Weather? = null, navController: NavController? = null) {
+fun MainScaffold(weather: Weather? = null, navController: NavController? = null, isImperial: Boolean) {
     Scaffold(
         topBar = {
             WeatherAppBar(
@@ -79,14 +100,14 @@ fun MainScaffold(weather: Weather? = null, navController: NavController? = null)
         }
     ) {
         if (weather != null) {
-            MainContent(weather, it)
+            MainContent(weather, it, isImperial = isImperial)
         }
     }
 
 }
 
 @Composable
-fun MainContent(weather: Weather? = null, paddingValues: PaddingValues) {
+fun MainContent(weather: Weather? = null, paddingValues: PaddingValues, isImperial: Boolean) {
     val weatherItem = weather?.list?.get(0)
     val imageUrl = "$IMAGE_PATH${weatherItem?.weather?.get(0)?.icon}.png"
 
@@ -120,7 +141,7 @@ fun MainContent(weather: Weather? = null, paddingValues: PaddingValues) {
 
                 WeatherStateImage(imageUrl = imageUrl)
                 Text(
-                    text = (weatherItem?.temp?.day)?.fehToCel() + "º",
+                    text = (weatherItem?.temp?.day)?.formatDecimals() + "º",
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.ExtraBold
                 )
@@ -133,7 +154,7 @@ fun MainContent(weather: Weather? = null, paddingValues: PaddingValues) {
             }
         }
 
-        HumidityWindPressureRow(weatherItem, true)
+        HumidityWindPressureRow(weatherItem, isImperial)
         HorizontalDivider()
         SunsetSunRiseRow(weather = weather?.list?.get(0))
         Text(

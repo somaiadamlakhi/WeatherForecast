@@ -26,7 +26,6 @@ import com.startappz.weatherforcast.R
 import com.startappz.weatherforcast.model.WeatherItem
 import com.startappz.weatherforcast.screens.main.WeatherStateImage
 import com.startappz.weatherforcast.utils.Constants.IMAGE_PATH
-import com.startappz.weatherforcast.utils.fehToCel
 import com.startappz.weatherforcast.utils.formatDate
 import com.startappz.weatherforcast.utils.formatDateTime
 import com.startappz.weatherforcast.utils.formatDecimals
@@ -76,7 +75,7 @@ fun HumidityWindPressureRow(weatherItem: WeatherItem?, isImperial: Boolean) {
                 modifier = Modifier.size(20.dp)
             )
             Text(
-                text = "${formatDecimals(weatherItem?.speed)} " + if (isImperial) "mph" else "m/s",
+                text = "${(weatherItem?.speed?.formatDecimals())} " + if (isImperial) "mph" else "m/s",
                 style = MaterialTheme.typography.bodyMedium
             )
 
@@ -152,14 +151,14 @@ fun WeatherDetailRow(weather: WeatherItem) {
                     fontWeight = FontWeight.SemiBold
                 )
                 ){
-                    append((weather.temp.max).fehToCel() + "º")
+                    append((weather.temp.max).formatDecimals() + "º")
 
                 }
                 withStyle(
                     style = SpanStyle(
                         color = Color.LightGray)
                 ){
-                    append((weather.temp.min).fehToCel() + "º")
+                    append((weather.temp.min).formatDecimals() + "º")
                 }
             })
 
